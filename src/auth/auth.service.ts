@@ -1,13 +1,19 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2'
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginRequestDto, SignUpRequestDto } from './dto';
 
 
-@Injectable({})
+@Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwt: JwtService,
+    private config: ConfigService,
+  ) {}
   
   async signUp(dto: SignUpRequestDto) {
     const {
@@ -46,7 +52,12 @@ export class AuthService {
       },
     })
 
-    return user;
+    const token = await this.signToken(user)
+
+    return {
+      ...user,
+      token,
+    }
   }
 
   async login(dto: LoginRequestDto) {
@@ -71,7 +82,21 @@ export class AuthService {
       throw new ForbiddenException('Wrong email or password')
     }
 
-    return user
+    const token = await this.signToken(user)
+
+    return {
+      ...user,
+      token,
+    }
+  }
+
+  signToken(user) {
+    const secret = this.config.get('JWT_SECRET')
+
+    return this.jwt.signAsync(user, {
+      expiresIn: '365d',
+      secret,
+    })
   }
 
 }
