@@ -30,7 +30,7 @@ export class AuthService {
     })
 
     if (existingUser) {
-      throw new ForbiddenException('Email already exists')
+      throw new ForbiddenException('EMAIL_ALREADY_EXISTS')
     }
 
     const hash = await argon.hash(password)
@@ -73,13 +73,13 @@ export class AuthService {
     })
 
     if (!user) {
-      throw new ForbiddenException('Wrong email or password')
+      throw new ForbiddenException('WRONG_EMAIL_OR_PASSWORD')
     }
 
     const passwordIsCorrect = await argon.verify(user.hash, password)
 
     if (!passwordIsCorrect) {
-      throw new ForbiddenException('Wrong email or password')
+      throw new ForbiddenException('WRONG_EMAIL_OR_PASSWORD')
     }
 
     const token = await this.signToken(user)

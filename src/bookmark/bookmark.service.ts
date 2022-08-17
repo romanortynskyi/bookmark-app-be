@@ -10,7 +10,6 @@ export class BookmarkService {
     const {
       userId,
       title,
-      description,
       link,
     } = dto
 
@@ -27,10 +26,8 @@ export class BookmarkService {
     const bookmark = await this.prisma.bookmark.create({
       data: {
         title,
-        description,
         link,
         userId,
-
       },
     })
 
@@ -41,7 +38,6 @@ export class BookmarkService {
     const {
       userId,
       title,
-      description,
       link,
     } = dto
 
@@ -71,7 +67,6 @@ export class BookmarkService {
       },
       data: {
         title,
-        description,
         link,
         userId,
       },

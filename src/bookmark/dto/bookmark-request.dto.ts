@@ -5,10 +5,6 @@ export class BookmarkRequestDto {
   @MinLength(1)
   title: string
 
-  @IsString()
-  @MinLength(1)
-  description: string
-
   @IsUrl()
   link: string
 
